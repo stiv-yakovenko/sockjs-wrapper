@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sockjs demo with authorisation</title>
+    <script src="./jquery.js"></script>
+    <script src="./sockjs.min.js"></script>
+    <script src="./sockjs.wrap.js"></script>
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+Hi, please login as admin/admin:<br>
+<input id="user"><br>
+<input id="pass"><br>
+<button id="submit">submit</button>
+<br>
+<br>
+<div id='welcome' class="hidden">
+    Hello, <span id="ip"></span>!<br>
+    <button id="click">click me to send message</button>
+    <br>
+    <span id="response"></span>
+</div>
+<br>
+<div id="error" class="hidden">Login incorrect</div>
+<script>
+    $(function () {
+        $('#submit').click(function () {
+            $('#error').addClass('hidden');
+            $('#welcome').addClass('hidden');
+            var auth = {user: $('#user').val(), pass: $('#pass').val()};
+            var socketio = new SockJSWrap('/socket', auth);
+            socketio.on("onconnected", function (data) {
+                $('#error').addClass('hidden');
+                $('#welcome').removeClass('hidden');
+                $('#ip').html(data.ip);
+                console.log("onconnected", data);
+            });
+            socketio.on('auth-fail', function (data) {
+                $('#error').removeClass('hidden');
+                $('#welcome').addClass('hidden');
+            });
+            var cnt = 0;
+            $('#click').click(function () {
+                socketio.emit("click", {}, function () {
+                    $('#response').html("Response #" + cnt);
+                    cnt++;
+                })
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
