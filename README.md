@@ -1,5 +1,7 @@
 # sockjs-wrapper
-Wrapper for sockjs which allows subscribing for events and launching callbacks
+Wrapper for sockjs which allows subscribing for events and launching callbacks.
+
+
 https://github.com/sockjs is alternative for socketio, which works better
 under highload and has server implementation for different languages.
   
